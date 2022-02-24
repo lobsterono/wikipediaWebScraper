@@ -1,0 +1,18 @@
+from urllib.request import Request, urlopen
+from bs4 import BeautifulSoup as bs
+while True:
+    query = '_'.join((input("Query ? ")).split(' '))
+    if query == '-1': break
+    try: 
+        url = ("https://en.wikipedia.org/wiki/"+query)
+        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        webpage = urlopen(req).read()
+        page_soup = bs(webpage,"html.parser")
+        cont = str((page_soup.find_all("div","shortdescription nomobile noexcerpt noprint searchaux"))[0])
+        res = cont[cont.index('>')+1:len(cont)-6]
+        if res == 'Topics referred to by the same term':
+            cont = str((page_soup.find_all("a","mw-redirect"))[0])
+            res = cont[cont.index('>')+1:len(cont)-4]
+        print(res)
+    except:
+        print("Search Error")
